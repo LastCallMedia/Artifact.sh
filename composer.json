@@ -1,0 +1,21 @@
+{
+    "name": "lastcall/drupal-scaffold-scripts",
+    "description": "Shell scripts for source/artifact Drupal builds.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rob Bayliss",
+            "email": "rob@lastcallmedia.com"
+        }
+    ],
+    "require": {},
+    "bin": [
+      "bin/artifact",
+      "bin/create-environment-pantheon",
+      "bin/json-to-bash",
+      "bin/prune-artifact-branches",
+      "bin/prune-artifact-environments-pantheon",
+      "bin/refresh-local-pantheon"
+    ]
+}

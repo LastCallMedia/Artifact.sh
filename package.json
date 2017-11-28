@@ -1,0 +1,10 @@
+{
+  "name": "lastcall-build-scripts",
+  "dependencies": {
+    "bats": "^0.4.2"
+  },
+  "devDependencies": {
+    "bats-assert": "https://github.com/jasonkarns/bats-assert",
+    "bats-mock": "^1.0.1"
+  }
+}
