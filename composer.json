@@ -12,7 +12,7 @@
     "require": {},
     "bin": [
       "bin/artifact",
-      "bin/create-environment-pantheon",
+      "bin/create-artifact-environment-pantheon",
       "bin/json-to-bash",
       "bin/prune-artifact-branches",
       "bin/prune-artifact-environments-pantheon",
