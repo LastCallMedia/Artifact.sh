@@ -73,7 +73,9 @@ grep -Fxq ".artifact" .git/info/exclude || {
 
 # Setup the .artifact repository:
 git init --bare .artifact
+# Exclude all .artifact and .git directories.
 grep -Fxq ".artifact" .artifact/info/exclude || echo ".artifact" >> .artifact/info/exclude
+grep -Fxq ".git" .artifact/info/exclude || echo ".git" >> .artifact/info/exclude
 $agit config core.bare false
 $agit remote add origin "$artifact" && echo "Setting artifact origin to $artifact"
 
