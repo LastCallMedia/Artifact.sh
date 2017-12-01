@@ -1,0 +1,9 @@
+version: 2
+jobs:
+   build:
+     docker:
+       - image: lastcallmedia/php:7.0-dev
+     steps:
+       - checkout
+       - run: yarn
+       - run: node_modules/.bin/bats tests/
