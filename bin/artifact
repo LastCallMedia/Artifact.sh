@@ -96,7 +96,7 @@ fi
 
 # Rename .artifact.gitignore to .gitignore recursively.
 find . -name .artifact.gitignore -exec sh -c 'mv {} $(dirname {})/.gitignore' \;
-find ./* -name .git -type d -depth -exec sh -c 'mv {} $(dirname {})/.artifactgitbak' \;
+find ./*  -depth -name .git -type d -exec sh -c 'mv {} $(dirname {})/.artifactgitbak' \;
 
 $agit add .
 if [ $skipcommit ]; then
@@ -113,7 +113,7 @@ fi
 
 # Reset .gitignore files and remove .artifact.
 git checkout $(git ls-files *.gitignore)
-find ./* -name .artifactgitbak -depth -type d -exec sh -c 'mv {} $(dirname {})/.git' \;
+find ./* -depth -name .artifactgitbak -type d -exec sh -c 'mv {} $(dirname {})/.git' \;
 rm -rf .artifact
 
 
