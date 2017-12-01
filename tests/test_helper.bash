@@ -1,23 +1,23 @@
 #!/bin/bash
 
 function setup_source_repo() {
-  setup_remote_repo "$1-working"
-  commit_file source.txt "Initial commit on source"
+  setup_repo "$1-working"
+  echo "source" > source.txt
+  echo "source-ignored.txt" > .gitignore
+  echo "artifact-ignored.txt" > .artifact.gitignore
+  git add . && git commit -m "Initial commit on source"
   mv "$1-working/.git" "$1" && rm -rf "$1-working"
   cd "$1" && git config core.bare true
 }
 
 function setup_artifact_repo() {
-  setup_remote_repo "$1-working"
-  commit_file artifact.txt "Initial commit on artifact"
+  setup_repo "$1-working"
+  echo "artifact" > artifact.txt
+  git add . && git commit -m "Initial commit on artifact"
   mv "$1-working/.git" "$1" && rm -rf "$1-working"
   cd "$1" && git config core.bare true
 }
 
-function commit_file() {
-  touch $1 && git add $1 && git commit -m "$2"
-}
-
-function setup_remote_repo() {
+function setup_repo() {
   mkdir -p $1 && cd $1 && git init
 }

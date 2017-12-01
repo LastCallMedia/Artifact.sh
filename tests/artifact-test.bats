@@ -76,6 +76,15 @@ teardown() {
   refute git --git-dir="$artifactrepo" cat-file -e "HEAD:artifact.txt"
 }
 
+@test "it respects the .artifact.gitignore file" {
+  touch source-ignored.txt
+  touch artifact-ignored.txt
+  run $artifact -a "$BATS_TMPDIR/artifact"
+  assert_success
+  assert git --git-dir="$artifactrepo" cat-file -e "HEAD:source-ignored.txt"
+  refute git --git-dir="$artifactrepo" cat-file -e "HEAD:artifact-ignored.txt"
+}
+
 @test "it considers files that are present locally but not in the source repository" {
   touch localaddition.txt
   run $artifact -a "$BATS_TMPDIR/artifact"
