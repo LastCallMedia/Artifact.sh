@@ -39,39 +39,39 @@ teardown() {
 
 @test "invoking without arguments prints usage" {
   run $artifact
-  [ "$status" -eq 1 ]
-  assert_equal "$output" "$usage"
+  assert_failure
+  assert_equal "$usage" "$output"
 }
 
 @test "invoking with -h shows usage" {
   run $artifact -h
-  [ "$status" -eq 0 ]
-  assert_equal "$output" "$usage"
+  assert_success
+  assert_equal "$usage" "$output"
 }
 
 @test "invoking without an artifact url throws error" {
   run $artifact -b test
-  [ "$status" -eq 1 ]
+  assert_failure
   assert_equal  "Artifact URL must be set by using the -a flag." "$output"
 }
 
 @test "invoking without a branch throws error" {
   cd $BATS_TMPDIR
   run $artifact -a foo@example.com
-  [ "$status" -eq 1 ]
-  assert_equal "$output" "Branch must be set by using the -b flag."
+  assert_failure
+  assert_equal "Branch must be set by using the -b flag." "$output"
 }
 
 @test "invoking without message throws error" {
   cd $BATS_TMPDIR
   run $artifact -a foo@example.com -b "test"
-  [ "$status" -eq 1 ]
-  assert_equal "$output" "Message must be set using the -m flag."
+  assert_failure
+  assert_equal "Message must be set using the -m flag." "$output"
 }
 
 @test "it pushes files from source to artifact" {
   run $artifact -a "$BATS_TMPDIR/artifact"
-  [ "$status" -eq 0 ]
+  assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:source.txt"
   refute git --git-dir="$artifactrepo" cat-file -e "HEAD:artifact.txt"
 }
@@ -85,17 +85,28 @@ teardown() {
   refute git --git-dir="$artifactrepo" cat-file -e "HEAD:artifact-ignored.txt"
 }
 
+@test "it respects nested .artifact.gitignore files" {
+  touch nested/source-ignored.txt
+  touch nested/artifact-ignored.txt
+  run $artifact -a "$BATS_TMPDIR/artifact"
+  assert_success
+  assert git --git-dir="$artifactrepo" cat-file -e "HEAD:nested/source-ignored.txt"
+  refute git --git-dir="$artifactrepo" cat-file -e "HEAD:nested/artifact-ignored.txt"
+}
+
 @test "it restores .gitignore files after committing artifact" {
   run $artifact -a "$BATS_TMPDIR/artifact"
   assert_success
-  assert_equal "$(cat .gitignore)" "source-ignored.txt"
-  assert_equal "$(cat .artifact.gitignore)" "artifact-ignored.txt"
+  assert_equal "/source-ignored.txt" "$(cat .gitignore)"
+  assert_equal "/source-ignored.txt" "$(cat nested/.gitignore)"
+  assert_equal "/artifact-ignored.txt" "$(cat .artifact.gitignore)"
+  assert_equal "/artifact-ignored.txt" "$(cat nested/.artifact.gitignore)"
 }
 
 @test "it considers files that are present locally but not in the source repository" {
   touch localaddition.txt
   run $artifact -a "$BATS_TMPDIR/artifact"
-  [ "$status" -eq 0 ]
+  assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:localaddition.txt"
 }
 

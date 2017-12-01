@@ -2,9 +2,10 @@
 
 function setup_source_repo() {
   setup_repo "$1-working"
+  mkdir nested
   echo "source" > source.txt
-  echo "source-ignored.txt" > .gitignore
-  echo "artifact-ignored.txt" > .artifact.gitignore
+  echo "/source-ignored.txt" | tee .gitignore nested/.gitignore
+  echo "/artifact-ignored.txt" | tee .artifact.gitignore nested/.artifact.gitignore
   git add . && git commit -m "Initial commit on source"
   mv "$1-working/.git" "$1" && rm -rf "$1-working"
   cd "$1" && git config core.bare true
