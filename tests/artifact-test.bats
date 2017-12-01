@@ -114,7 +114,7 @@ teardown() {
   mkdir s1 && git init s1 && touch s1/test.txt
   git clone "$srcrepo" s2 > /dev/null 2>&1
   run $artifact -a "$BATS_TMPDIR/artifact"
-  [ "$status" -eq 0 ]
+  assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:s1/test.txt"
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:s2/source.txt"
 }
@@ -122,19 +122,19 @@ teardown() {
 @test "it restores .git subdirectories after committing artifact" {
   git clone "$srcrepo" s2 > /dev/null 2>&1
   run $artifact -a "$BATS_TMPDIR/artifact"
-  [ "$status" -eq 0 ]
+  assert_success
   assert [ -d s2/.git ]
 }
 
 @test "it picks up the branch from the current repository" {
   git checkout -b mybranch
   run $artifact -a "$BATS_TMPDIR/artifact"
-  [ "$status" -eq 0 ]
+  assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "mybranch:source.txt"
 }
 
 @test "it picks up the message from the current commit" {
   run $artifact -a "$BATS_TMPDIR/artifact"
-  [ "$status" -eq 0 ]
+  assert_success
   assert_contains "Initial commit on source" "$(git --git-dir="$artifactrepo" show --quiet --format=%B)"
 }
