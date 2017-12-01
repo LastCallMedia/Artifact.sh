@@ -83,11 +83,20 @@ teardown() {
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:localaddition.txt"
 }
 
-@test "it does not push a nested git directory" {
-  mkdir -p foo/.git/ foo/git && touch foo/.git/config && touch foo/git/config
+@test "it can commit subdirectories that contain .git subfolders" {
+  mkdir s1 && git init s1 && touch s1/test.txt
+  git clone "$srcrepo" s2 > /dev/null 2>&1
   run $artifact -a "$BATS_TMPDIR/artifact"
   [ "$status" -eq 0 ]
-  refute git --git-dir="$artifactrepo" cat-file -e "HEAD:foo/.git/config"
+  assert git --git-dir="$artifactrepo" cat-file -e "HEAD:s1/test.txt"
+  assert git --git-dir="$artifactrepo" cat-file -e "HEAD:s2/source.txt"
+}
+
+@test "it restores .git subdirectories after committing artifact" {
+  git clone "$srcrepo" s2 > /dev/null 2>&1
+  run $artifact -a "$BATS_TMPDIR/artifact"
+  [ "$status" -eq 0 ]
+  assert [ -d s2/.git ]
 }
 
 @test "it picks up the branch from the current repository" {

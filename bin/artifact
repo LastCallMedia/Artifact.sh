@@ -75,7 +75,7 @@ grep -Fxq ".artifact" .git/info/exclude || {
 git init --bare .artifact
 # Exclude all .artifact and .git directories.
 grep -Fxq ".artifact" .artifact/info/exclude || echo ".artifact" >> .artifact/info/exclude
-grep -Fxq ".git" .artifact/info/exclude || echo ".git" >> .artifact/info/exclude
+grep -Fxq ".artifactgitbak" .artifact/info/exclude || echo ".artifactgitbak" >> .artifact/info/exclude
 $agit config core.bare false
 $agit remote add origin "$artifact" && echo "Setting artifact origin to $artifact"
 
@@ -96,6 +96,7 @@ fi
 
 # Rename .artifact.gitignore to .gitignore recursively.
 find . -name .artifact.gitignore -exec sh -c 'mv {} $(dirname {})/.gitignore' \;
+find ./* -name .git -type d -depth -exec sh -c 'mv {} $(dirname {})/.artifactgitbak' \;
 
 $agit add .
 if [ $skipcommit ]; then
@@ -112,6 +113,7 @@ fi
 
 # Reset .gitignore files and remove .artifact.
 git checkout $(git ls-files *.gitignore)
+find ./* -name .artifactgitbak -depth -type d -exec sh -c 'mv {} $(dirname {})/.git' \;
 rm -rf .artifact
 
 
