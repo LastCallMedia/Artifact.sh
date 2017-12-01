@@ -5,5 +5,6 @@ jobs:
        - image: lastcallmedia/php:7.0-dev
      steps:
        - checkout
+       - run: git config --global user.name "Mona Lisa" && git config --global user.email "email@example.com"
        - run: yarn
        - run: node_modules/.bin/bats tests/
