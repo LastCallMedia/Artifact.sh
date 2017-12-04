@@ -25,7 +25,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - deploy:
+      - release:
           filters:
             tags:
               only: /.*/
