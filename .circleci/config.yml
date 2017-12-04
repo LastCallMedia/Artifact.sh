@@ -1,6 +1,6 @@
 version: 2
 jobs:
-   build:
+   test:
      docker:
        - image: lastcallmedia/php:7.0-dev
      steps:
@@ -8,3 +8,30 @@ jobs:
        - run: git config --global user.name "Mona Lisa" && git config --global user.email "email@example.com"
        - run: yarn
        - run: node_modules/.bin/bats tests/
+       # Publishing workflow:
+       - run: curl -L -o /usr/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x /usr/bin/jq
+       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+
+   release:
+    docker:
+      - image: lastcallmedia/php:7.0-dev
+    steps:
+      - checkout
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_PUBLISH_TOKEN" >> ~/.npmrc
+      - run: yarn publish --tag="$CIRCLE_TAG"
+
+workflows:
+  version: 2
+  test_and_release:
+    jobs:
+      - test
+          filters:
+            tags:
+              only: /.*/
+      - deploy:
+          filters:
+            tags:
+              only: /.*/
+          branches:
+            ignore: /.*/
+          context: org-global

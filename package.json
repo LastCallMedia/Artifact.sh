@@ -1,6 +1,12 @@
 {
   "name": "lastcall-artifact.sh",
   "license": "MIT",
+  "files": [
+    "artifact.sh"
+  ],
+  "bin": [
+    "artifact.sh"
+  ],
   "dependencies": {
   },
   "devDependencies": {
