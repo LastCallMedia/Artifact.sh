@@ -2,7 +2,7 @@ version: 2
 jobs:
    test:
      docker:
-       - image: lastcallmedia/php:7.0-dev
+       - image: circleci/node:6
      steps:
        - checkout
        - run: git config --global user.name "Mona Lisa" && git config --global user.email "email@example.com"
@@ -11,11 +11,11 @@ jobs:
 
    release:
     docker:
-      - image: lastcallmedia/php:7.0-dev
+      - image: circleci/node:6
     steps:
       - checkout
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_PUBLISH_TOKEN" >> ~/.npmrc
-      - run: yarn publish --tag="$CIRCLE_TAG"
+      - run: yarn publish --new-version="$CIRCLE_TAG" --no-git-tag-version
 
 workflows:
   version: 2
