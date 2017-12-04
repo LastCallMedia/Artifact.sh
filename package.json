@@ -1,9 +1,10 @@
 {
-  "name": "lastcall-build-scripts",
+  "name": "lastcall-artifact.sh",
+  "license": "MIT",
   "dependencies": {
-    "bats": "^0.4.2"
   },
   "devDependencies": {
+    "bats": "^0.4.2",
     "bats-assert": "https://github.com/jasonkarns/bats-assert",
     "bats-mock": "^1.0.1"
   }

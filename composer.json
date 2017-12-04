@@ -1,6 +1,6 @@
 {
-    "name": "lastcall/drupal-scaffold-scripts",
-    "description": "Shell scripts for source/artifact Drupal builds.",
+    "name": "lastcall/artifact.sh",
+    "description": "Build an 'artifact' from one git repository and commit it to another.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,11 +11,6 @@
     ],
     "require": {},
     "bin": [
-      "bin/artifact",
-      "bin/create-artifact-environment-pantheon",
-      "bin/json-to-bash",
-      "bin/prune-artifact-branches",
-      "bin/prune-artifact-environments-pantheon",
-      "bin/refresh-local-pantheon"
+      "artifact"
     ]
 }

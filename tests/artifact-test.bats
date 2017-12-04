@@ -5,7 +5,7 @@ load ../node_modules/bats-mock/stub
 
 load test_helper
 
-artifact="$BATS_TEST_DIRNAME/../bin/artifact"
+artifact="$BATS_TEST_DIRNAME/../artifact.sh"
 srcrepo="${BATS_TMPDIR}/src"
 artifactrepo="${BATS_TMPDIR}/artifact"
 workspace="${BATS_TMPDIR}/ws"
@@ -22,7 +22,7 @@ Options:
 Usage:
   Build and push to an artifact repository on github:
 
-  $BATS_TEST_DIRNAME/../bin/artifact -d git://github.com/example/artifact.git"
+  $BATS_TEST_DIRNAME/../artifact.sh -d git://github.com/example/artifact.git"
 
 setup() {
     setup_source_repo "$srcrepo" > /dev/null 2>&1
