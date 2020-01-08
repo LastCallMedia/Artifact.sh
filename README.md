@@ -7,7 +7,7 @@ Installation:
 -------------
 cURL:
 ```bash
-curl -O https://raw.githubusercontent.com/LastCallMedia/Artifact.sh/master/artifact.sh && chmod +x artifact.sh
+curl -O https://raw.githubusercontent.com/LastCallMedia/Artifact.sh/master/artifactsh && chmod +x artifactsh
 ```
 Composer:
 ```bash
@@ -40,5 +40,8 @@ Usage:
 ------
 Export the current working directory as an artifact to `git://github.com/example/artifact.git`:
 
-  ./artifact.sh -d git://github.com/example/artifact.git
+  `./artifactsh -d git://github.com/example/artifact.git`
   
+Running Tests:
+--------------
+From the lastcall-artifact.sh project root directory after installing project dependencies: `node_modules/.bin/bats tests`  
