@@ -42,7 +42,6 @@ if [ ! $nogit ]; then
   commit=$(git show --quiet --format=%h)
 fi
 
-srcbranch=master
 agit="git --git-dir=.artifact"
 
 if [ -z "$1" ]; then
@@ -78,6 +77,10 @@ grep -Fxq ".artifact" .artifact/info/exclude || echo ".artifact" >> .artifact/in
 grep -Fxq ".artifactgitbak" .artifact/info/exclude || echo ".artifactgitbak" >> .artifact/info/exclude
 $agit config core.bare false
 $agit remote add origin "$artifact" && echo "Setting artifact origin to $artifact"
+
+# Detect the default branch for the remote. Typically main or master.
+srcbranch=$(LC_ALL=C $agit remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+test ! -z "$srcbranch" || error_out "Unable to detect default branch from remote"
 
 echo "Fetching downstream.  This may take a moment..."
 if $agit fetch --depth=1 -q origin "$branch" 2>/dev/null; then

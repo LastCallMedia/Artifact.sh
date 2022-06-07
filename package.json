@@ -10,8 +10,8 @@
   "dependencies": {
   },
   "devDependencies": {
-    "bats": "^0.4.2",
-    "bats-assert": "https://github.com/jasonkarns/bats-assert",
-    "bats-mock": "^1.0.1"
+    "bats": "^1.7.0",
+    "bats-support": "^0.3.0",
+    "bats-assert": "^2.0.0"
   }
 }

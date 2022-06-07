@@ -1,10 +1,5 @@
 #!/usr/bin/env bats
 
-load ../node_modules/bats-assert/all
-load ../node_modules/bats-mock/stub
-
-load test_helper
-
 artifact="$BATS_TEST_DIRNAME/../artifactsh"
 srcrepo="${BATS_TMPDIR}/src"
 artifactrepo="${BATS_TMPDIR}/artifact"
@@ -25,6 +20,9 @@ Usage:
   $BATS_TEST_DIRNAME/../artifactsh -d git://github.com/example/artifact.git"
 
 setup() {
+    load test_helper
+    load ../node_modules/bats-support/load
+    load ../node_modules/bats-assert/load
     setup_source_repo "$srcrepo" > /dev/null 2>&1
     setup_artifact_repo "$artifactrepo" > /dev/null 2>&1
     mkdir -p "$workspace" && git clone "$srcrepo" "$workspace" > /dev/null 2>&1
@@ -136,5 +134,5 @@ teardown() {
 @test "it picks up the message from the current commit" {
   run $artifact -a "$BATS_TMPDIR/artifact"
   assert_success
-  assert_contains "Initial commit on source" "$(git --git-dir="$artifactrepo" show --quiet --format=%B)"
+  git --git-dir="$artifactrepo" show --quiet --format=%B | assert_output --partial "Initial commit on source" -
 }
