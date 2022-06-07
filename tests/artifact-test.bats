@@ -23,8 +23,8 @@ setup() {
     load test_helper
     load ../node_modules/bats-support/load
     load ../node_modules/bats-assert/load
-    setup_source_repo "$srcrepo" > /dev/null 2>&1
-    setup_artifact_repo "$artifactrepo" > /dev/null 2>&1
+    setup_source_repo "$srcrepo"
+    setup_artifact_repo "$artifactrepo"
     mkdir -p "$workspace" && git clone "$srcrepo" "$workspace" > /dev/null 2>&1
     cd "$workspace"
 }
