@@ -4,6 +4,9 @@
   "files": [
     "artifactsh"
   ],
+  "scripts": {
+    "test": "bats tests/"
+  },
   "bin": {
     "artifactsh": "artifactsh"
   },
