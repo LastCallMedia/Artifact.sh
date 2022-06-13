@@ -4,14 +4,17 @@
   "files": [
     "artifactsh"
   ],
+  "scripts": {
+    "test": "bats tests/"
+  },
   "bin": {
     "artifactsh": "artifactsh"
   },
   "dependencies": {
   },
   "devDependencies": {
-    "bats": "^0.4.2",
-    "bats-assert": "https://github.com/jasonkarns/bats-assert",
-    "bats-mock": "^1.0.1"
+    "bats": "^1.7.0",
+    "bats-support": "^0.2.0",
+    "bats-assert": "^2.0.0"
   }
 }

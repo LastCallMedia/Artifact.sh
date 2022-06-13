@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    tags: ['*']
+
+jobs:
+  npm:
+    name: NPM Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm publish --new-version="$CIRCLE_TAG" --no-git-tag-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

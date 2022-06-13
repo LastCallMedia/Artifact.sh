@@ -1,15 +1,5 @@
 #!/usr/bin/env bats
 
-load ../node_modules/bats-assert/all
-load ../node_modules/bats-mock/stub
-
-load test_helper
-
-artifact="$BATS_TEST_DIRNAME/../artifactsh"
-srcrepo="${BATS_TMPDIR}/src"
-artifactrepo="${BATS_TMPDIR}/artifact"
-workspace="${BATS_TMPDIR}/ws"
-
 usage="Builds a git artifact from a source repository.
 
 Options:
@@ -25,8 +15,17 @@ Usage:
   $BATS_TEST_DIRNAME/../artifactsh -d git://github.com/example/artifact.git"
 
 setup() {
-    setup_source_repo "$srcrepo" > /dev/null 2>&1
-    setup_artifact_repo "$artifactrepo" > /dev/null 2>&1
+    artifact="$BATS_TEST_DIRNAME/../artifactsh"
+    srcrepo="${BATS_TEST_TMPDIR}/src"
+    artifactrepo="${BATS_TEST_TMPDIR}/artifact"
+    workspace="${BATS_TEST_TMPDIR}/ws"
+    mainbranchname="artifact_branch_main"
+
+    load test_helper
+    load ../node_modules/bats-support/load
+    load ../node_modules/bats-assert/load
+    setup_source_repo "$srcrepo" "$mainbranchname"
+    setup_artifact_repo "$artifactrepo" "$mainbranchname"
     mkdir -p "$workspace" && git clone "$srcrepo" "$workspace" > /dev/null 2>&1
     cd "$workspace"
 }
@@ -70,7 +69,7 @@ teardown() {
 }
 
 @test "it pushes files from source to artifact" {
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:source.txt"
   refute git --git-dir="$artifactrepo" cat-file -e "HEAD:artifact.txt"
@@ -79,7 +78,7 @@ teardown() {
 @test "it respects the .artifact.gitignore file" {
   touch source-ignored.txt
   touch artifact-ignored.txt
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:source-ignored.txt"
   refute git --git-dir="$artifactrepo" cat-file -e "HEAD:artifact-ignored.txt"
@@ -88,14 +87,14 @@ teardown() {
 @test "it respects nested .artifact.gitignore files" {
   touch nested/source-ignored.txt
   touch nested/artifact-ignored.txt
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:nested/source-ignored.txt"
   refute git --git-dir="$artifactrepo" cat-file -e "HEAD:nested/artifact-ignored.txt"
 }
 
 @test "it restores .gitignore files after committing artifact" {
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert_equal "/source-ignored.txt" "$(cat .gitignore)"
   assert_equal "/source-ignored.txt" "$(cat nested/.gitignore)"
@@ -105,7 +104,7 @@ teardown() {
 
 @test "it considers files that are present locally but not in the source repository" {
   touch localaddition.txt
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:localaddition.txt"
 }
@@ -113,7 +112,7 @@ teardown() {
 @test "it can commit subdirectories that contain .git subfolders" {
   mkdir s1 && git init s1 && touch s1/test.txt
   git clone "$srcrepo" s2 > /dev/null 2>&1
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:s1/test.txt"
   assert git --git-dir="$artifactrepo" cat-file -e "HEAD:s2/source.txt"
@@ -121,20 +120,27 @@ teardown() {
 
 @test "it restores .git subdirectories after committing artifact" {
   git clone "$srcrepo" s2 > /dev/null 2>&1
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert [ -d s2/.git ]
 }
 
 @test "it picks up the branch from the current repository" {
   git checkout -b mybranch
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
   assert git --git-dir="$artifactrepo" cat-file -e "mybranch:source.txt"
 }
 
 @test "it picks up the message from the current commit" {
-  run $artifact -a "$BATS_TMPDIR/artifact"
+  run $artifact -a "$artifactrepo"
   assert_success
-  assert_contains "Initial commit on source" "$(git --git-dir="$artifactrepo" show --quiet --format=%B)"
+  git --git-dir="$artifactrepo" show --quiet --format=%B | assert_output --partial "Initial commit on source" -
+}
+
+@test "it uses the default branch from the git remote" {
+  git checkout -b mybranch
+  run $artifact -a "$artifactrepo"
+  assert_success
+  assert_output --partial "The mybranch branch doesn't exist yet. Starting from $mainbranchname"
 }
