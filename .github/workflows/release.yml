@@ -16,6 +16,7 @@ jobs:
           cache: npm
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
-      - run: npm publish --new-version="${{ github.ref_name }}" --no-git-tag-version
+      - run: npm version --no-git-tag-version "${{ github.ref_name }}"
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
