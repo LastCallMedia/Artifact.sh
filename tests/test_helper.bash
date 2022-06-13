@@ -20,7 +20,5 @@ function setup_artifact_repo() {
 }
 
 function setup_repo() {
-
   mkdir -p $1 && cd $1 && git init --initial-branch="$2"
-
 }
