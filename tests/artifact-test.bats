@@ -19,13 +19,13 @@ setup() {
     srcrepo="${BATS_TEST_TMPDIR}/src"
     artifactrepo="${BATS_TEST_TMPDIR}/artifact"
     workspace="${BATS_TEST_TMPDIR}/ws"
-    branchname="artifact_branch_main"
+    mainbranchname="artifact_branch_main"
 
     load test_helper
     load ../node_modules/bats-support/load
     load ../node_modules/bats-assert/load
-    setup_source_repo "$srcrepo" "$branchname"
-    setup_artifact_repo "$artifactrepo" "$branchname"
+    setup_source_repo "$srcrepo" "$mainbranchname"
+    setup_artifact_repo "$artifactrepo" "$mainbranchname"
     mkdir -p "$workspace" && git clone "$srcrepo" "$workspace" > /dev/null 2>&1
     cd "$workspace"
 }
@@ -139,7 +139,8 @@ teardown() {
 }
 
 @test "it uses the default branch from the git remote" {
+  git checkout -b mybranch
   run $artifact -a "$artifactrepo"
   assert_success
-  assert_output --partial "Detected existing $branchname branch. Starting from here."
+  assert_output --partial "The mybranch branch doesn't exist yet. Starting from $mainbranchname"
 }
