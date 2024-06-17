@@ -1,7 +1,7 @@
 Artifact.sh
 ===========
 
-A shell script to create an "artifact" out of a git clone, and commit the result to another git repository.  You would use this script if you have one repository (the "Source" repository) that excludes third party dependencies and generated assets, and another (the "Artifact" repository) that you want to commit those dependencies to for deployment purposes.
+Artifact.sh is brought to you by your friends at [Last Call Media](https://www.lastcallmedia.com), its a shell script to create an "artifact" out of a git clone, and commit the result to another git repository.  You would use this script if you have one repository (the "Source" repository) that excludes third party dependencies and generated assets, and another (the "Artifact" repository) that you want to commit those dependencies to for deployment purposes.
 
 Installation:
 -------------
